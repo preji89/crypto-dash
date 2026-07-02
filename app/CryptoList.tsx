@@ -14,11 +14,16 @@ interface Coin {
 
 export default function CryptoList({ initialCoins }: { initialCoins: Coin[] }) {
   const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
 
-  // Filter the coins array as the user types
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(searchTerm), 300);
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
   const filteredCoins = initialCoins.filter((coin) =>
-    coin.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    coin.symbol.toLowerCase().includes(searchTerm.toLowerCase())
+    coin.name.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+    coin.symbol.toLowerCase().includes(debouncedSearch.toLowerCase())
   );
 
   return (
